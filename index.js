@@ -87,22 +87,28 @@ app.get(`/allblogs/:id`,async(req,res)=>{
   const result = await blogsCollection.findOne(query);
   res.send(result)
  })
+//  app.get(`/editblog/:id`,async(req,res)=>{
+//     const id=req.params.id;
+//    const query={_id:new ObjectId(id)}
+//     const result = await blogsCollection.findOne(query);
+//     res.send(result)
+//    })
 
  //update patch
- app.patch('/editblog/:id',async(req,res)=>{
-      const id= req.params.id;
-      const blogs = req.body.blogs
-      const query={_id:ObjectId(id)}
-      const updateDoc={
-        $set:{
-          blogs: blogs
+ app.patch('/allblogs/:id',async(req,res)=>{
+    const id= req.params.id;
+    const blogs = req.body.blogs
+    const query={_id :new ObjectId(id)}
+    const options = { upsert: true };
+    const updateDoc={
+      $set:{
+        blogs: blogs
+  }
     
-        }
-      
-      }
-      const result =await blogsCollection.updateOne(query,updateDoc)
-      res.send(result)
-     })
+    }
+    const result =await blogsCollection.updateOne(query,updateDoc,options)
+    res.send(result)
+   })
 
 app.get('/users/admin/:email', async(req,res)=>{
     const email=req.params.email;
@@ -149,12 +155,12 @@ app.get('/users/admin/:email', async(req,res)=>{
 // })
 
  
-//  app.delete('/doctors/:id',verifyJWT,verifyAdmin,async(req,res)=>{
-//     const id=req.params.id;
-//     const filter={_id:ObjectId(id)}
-//     const result= await doctorsCollection.deleteOne(filter)
-//     res.send(result)
-//  })
+ app.delete('/allblogs/:id',async(req,res)=>{
+    const id=req.params.id;
+    const filter={_id:new ObjectId(id)}
+    const result= await blogsCollection.deleteOne(filter)
+    res.send(result)
+ })
 
 
 
