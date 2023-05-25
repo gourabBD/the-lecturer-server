@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-
+const jwt= require('jsonwebtoken')
 require('dotenv').config();
 
 
@@ -36,7 +36,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 //     next();
 //  })
 // }
-
+//jwt token end
 async function run() {
     try {
         
@@ -50,11 +50,23 @@ async function run() {
     //         const decodedEmail = req.decoded.email;
     // const query ={email: decodedEmail}
     // const user=await usersCollection.findOne(query)
-    // if(user?.role !== 'admin'){
+    // if(user?.role !== 'admin551717'){
     //     return res.status(403).send({message: 'Forbidden Access'})
     // }
     //         next();
     //     }
+
+        // app.get('/jwt',async(req,res)=>{
+        //     const email=req.query.email;
+        //     const query ={email: email};
+        //     const user=await usersCollection.findOne(query);
+        //     if(user){
+        //          const token=jwt.sign({email},process.env.ACCESS_TOKEN,{expiresIn:'3h'}) 
+        //          return res.send({accessToken: token})
+        //     }
+        //     res.status(403).send({accessToken: ''})
+            
+        // })
 
         // Use Aggregate to query multiple collection and then merge data
        
@@ -76,12 +88,13 @@ app.get('/users', async(req,res)=>{
     const users=await usersCollection.find(query).toArray();
     res.send(users)
 })
-app.get('/allblogs', async(req,res)=>{
+app.get('/allBlogs', async(req,res)=>{
+ 
     const query ={};
-    const users=await blogsCollection.find(query).toArray();
-    res.send(users)
+    const Blogs=await blogsCollection.find(query).sort({_id:-1}).toArray();
+    res.send(Blogs)
 })
-app.get(`/allblogs/:id`,async(req,res)=>{
+app.get(`/allBlogs/:id`,async(req,res)=>{
   const id=req.params.id;
  const query={_id:new ObjectId(id)}
   const result = await blogsCollection.findOne(query);
@@ -95,7 +108,7 @@ app.get(`/allblogs/:id`,async(req,res)=>{
 //    })
 
  //update patch
- app.patch('/allblogs/:id',async(req,res)=>{
+ app.patch('/allBlogs/:id',async(req,res)=>{
     const id= req.params.id;
     const blogs = req.body.blogs
     const query={_id :new ObjectId(id)}
@@ -122,7 +135,7 @@ app.get('/users/admin/:email', async(req,res)=>{
     const result= await usersCollection.insertOne(user)
     res.send(result)
  })
- app.post('/allblogs',async(req,res)=>{
+ app.post('/allBlogs',async(req,res)=>{
     const user=req.body;
     const result= await blogsCollection.insertOne(user)
     res.send(result)
@@ -155,7 +168,7 @@ app.get('/users/admin/:email', async(req,res)=>{
 // })
 
  
- app.delete('/allblogs/:id',async(req,res)=>{
+ app.delete('/allBlogs/:id',async(req,res)=>{
     const id=req.params.id;
     const filter={_id:new ObjectId(id)}
     const result= await blogsCollection.deleteOne(filter)
