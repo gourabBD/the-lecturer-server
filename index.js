@@ -43,6 +43,7 @@ async function run() {
         const usersCollection = client.db('the-lecturer-server').collection('users');
      
         const blogsCollection = client.db('the-lecturer-server').collection('all-blogs');
+        const testsCollection = client.db('the-lecturer-server').collection('allTests');
      
 
     //     const verifyAdmin= async(req,res,next)=>{
@@ -100,6 +101,8 @@ app.get(`/allBlogs/:id`,async(req,res)=>{
   const result = await blogsCollection.findOne(query);
   res.send(result)
  })
+
+
 //  app.get(`/editblog/:id`,async(req,res)=>{
 //     const id=req.params.id;
 //    const query={_id:new ObjectId(id)}
@@ -174,6 +177,43 @@ app.get('/users/admin/:email', async(req,res)=>{
     const result= await blogsCollection.deleteOne(filter)
     res.send(result)
  })
+
+ //tests
+ app.get('/createTests', async(req,res)=>{
+ 
+    const query ={};
+    const Blogs=await testsCollection.find(query).sort({_id:-1}).toArray();
+    res.send(Blogs)
+})
+app.get(`/createTests/:id`,async(req,res)=>{
+  const id=req.params.id;
+ const query={_id:new ObjectId(id)}
+  const result = await testsCollection.findOne(query);
+  res.send(result)
+ })
+
+ app.patch('/createTests/:id',async(req,res)=>{
+    const id= req.params.id;
+    const blogs = req.body.blogs
+    const query={_id :new ObjectId(id)}
+    const options = { upsert: true };
+    const updateDoc={
+      $set:{
+        blogs: blogs
+  }
+    
+    }
+    const result =await testsCollection.updateOne(query,updateDoc,options)
+    res.send(result)
+   })
+
+   app.delete('/createTests/:id',async(req,res)=>{
+    const id=req.params.id;
+    const filter={_id:new ObjectId(id)}
+    const result= await testsCollection.deleteOne(filter)
+    res.send(result)
+ })
+ //tests
 
 
 
