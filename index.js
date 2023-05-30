@@ -185,6 +185,13 @@ app.get('/users/admin/:email', async(req,res)=>{
     const Blogs=await testsCollection.find(query).sort({_id:-1}).toArray();
     res.send(Blogs)
 })
+ app.post('/createTests',async(req,res)=>{
+    const testQuestions=req.body;
+    const result= await testsCollection.insertOne(testQuestions)
+    res.send(result)
+ })
+ 
+
 app.get(`/createTests/:id`,async(req,res)=>{
   const id=req.params.id;
  const query={_id:new ObjectId(id)}
