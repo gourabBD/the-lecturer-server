@@ -126,18 +126,47 @@ app.get(`/allBlogs/:id`,async(req,res)=>{
     res.send(result)
    })
 
-app.get('/users/admin/:email', async(req,res)=>{
-    const email=req.params.email;
-    const query= {email}
-    const user =await usersCollection.findOne(query)
-    res.send({isAdmin: user?.role === 'admin' })
-})
+// app.get('/users/admin/:email', async(req,res)=>{
+//     const email=req.params.email;
+//     const query= {email}
+//     const user =await usersCollection.findOne(query)
+//     res.send({isAdmin: user?.role === 'admin' })
+// })
+app.get(`/users/:id`,async(req,res)=>{
+  const id=req.params.id;
+ const query={_id:new ObjectId(id)}
+  const result = await usersCollection.findOne(query);
+  res.send(result)
+ })
+
+ app.patch('/users/:id',async(req,res)=>{
+  const id= req.params.id;
+  const role = req.body.role
+  const query={_id :new ObjectId(id)}
+  const updateDoc={
+    $set:{
+      role
+
+    }
+  
+  }
+  const result =await usersCollection.updateOne(query,updateDoc)
+  res.send(result)
+ })
 
  app.post('/users',async(req,res)=>{
     const user=req.body;
     const result= await usersCollection.insertOne(user)
     res.send(result)
  })
+app.delete('/users/:id',async(req,res)=>{
+  const id=req.params.id;
+  
+  const query={_id:new ObjectId(id)}
+  const result=await usersCollection.deleteOne(query)
+  res.send(result)
+ })
+
  app.post('/allBlogs',async(req,res)=>{
     const user=req.body;
     const result= await blogsCollection.insertOne(user)
